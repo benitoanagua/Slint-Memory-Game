@@ -1,38 +1,68 @@
-# Slint Rust Template
+# Slint Memory Game - Technical Reference
 
-A template for a Rust application that's using [Slint](https://slint.rs/) for the user interface.
+## Quick Start
 
-## About
+### System Requirements
+- Rust 1.60+
+- Cargo
 
-This template helps you get started developing a Rust application with Slint as toolkit
-for the user interface. It demonstrates the integration between the `.slint` UI markup and
-Rust code, how to react to callbacks, get and set properties, and use basic widgets.
+### Build & Run
+```bash
+git clone https://github.com/benitoanagua/Slint-Memory-Game.git
+cd Slint-Memory-Game
+cargo run --release
+```
 
-## Usage
+## Key Components
 
-1. Install Rust by following its [getting-started guide](https://www.rust-lang.org/learn/get-started).
-   Once this is done, you should have the `rustc` compiler and the `cargo` build system installed in your `PATH`.
-2. Download and extract the [ZIP archive of this repository](https://github.com/slint-ui/slint-rust-template/archive/refs/heads/main.zip).
-3. Rename the extracted directory and change into it:
-    ```
-    mv slint-rust-template-main my-project
-    cd my-project    
-    ```
-4. Build with `cargo`:
-    ```
-    cargo build
-    ```
-5. Run the application binary:
-    ```
-    cargo run
-    ```
+### 1. UI Definition (`ui/memory.slint`)
+- Declares 4×4 game grid
+- Implements tile animations
+- Defines game state properties:
+  ```slint
+  in property <[TileData]> memory_tiles
+  in property <bool> disable_tiles
+  ```
 
-We recommend using an IDE for development, along with our [LSP-based IDE integration for `.slint` files](https://github.com/slint-ui/slint/blob/master/tools/lsp/README.md). You can also load this project directly in [Visual Studio Code](https://code.visualstudio.com) and install our [Slint extension](https://marketplace.visualstudio.com/items?itemName=Slint.slint).
+### 2. Game Engine (`src/main.rs`)
+- Manages game logic:
+  ```rust
+  let tiles_model = Rc::new(VecModel::from(tiles));
+  main_window.set_memory_tiles(tiles_model.clone().into());
+  ```
+- Handles tile matching:
+  ```rust
+  main_window.on_check_if_pair_solved(move || {
+    // Matching logic
+  });
+  ```
 
-## Next Steps
+## Technical Highlights
+- **Rust Backend**:
+  - `rand` for tile shuffling
+  - `Rc<VecModel>` for shared state
+  - Weak references for UI callbacks
 
-We hope that this template helps you get started, and that you enjoy exploring making user interfaces with Slint. To learn more
-about the Slint APIs and the `.slint` markup language, check out our [online documentation](https://slint.dev/docs).
+- **Slint Frontend**:
+  - Declarative UI syntax
+  - Property bindings
+  - Built-in animations
 
-Don't forget to edit this readme to replace it by yours, and edit the `name =` field in `Cargo.toml` to match the name of your
-project.
+## Build Options
+| Command | Description |
+|---------|-------------|
+| `cargo build` | Debug build |
+| `cargo run --release` | Optimized build |
+| `cargo test` | Run unit tests |
+
+## Project Structure
+```
+.
+├── Cargo.toml        # Rust manifest
+├── src/main.rs       # Game logic
+├── ui/memory.slint   # UI definition
+└── icons/            # Game assets
+```
+
+## License
+MIT © 2023
